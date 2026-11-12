@@ -1,0 +1,688 @@
+/* ==========================================================================
+   MATTE & CHÁ STORE - FOLHA DE ESTILOS OFICIAL (style.css)
+   Paleta: Verde Erva-Mate, Amarelo Infusão/Dourado e Branco Natural
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Variações de Verde (Erva-mate, Folhas, Chá Verde) */
+    --verde-escuro: #1b4332;
+    --verde-mate: #2d6a4f;
+    --verde-folha: #40916c;
+    --verde-claro: #74c69d;
+    --verde-suave: #d8f3dc;
+    --verde-menta-bg: #f1f8f4;
+
+    /* Variações de Amarelo (Infusão, Mel, Sol) */
+    --amarelo-ouro: #e9c46a;
+    --amarelo-infusao: #f4a261;
+    --amarelo-destaque: #ffd166;
+    --amarelo-suave: #fff8e7;
+
+    /* Variações de Branco & Neutros */
+    --branco-puro: #ffffff;
+    --branco-creme: #fcfbf7;
+    --branco-gelo: #f4f6f3;
+    --texto-escuro: #1f2d24;
+    --texto-suave: #52665a;
+    --borda-sutil: #d5e2d9;
+    --erro-vermelho: #c1121f;
+
+    /* Sombras e Bordas */
+    --sombra-card: 0 8px 24px rgba(27, 67, 50, 0.08);
+    --sombra-hover: 0 14px 32px rgba(27, 67, 50, 0.14);
+    --radius-padrao: 14px;
+}
+
+/* ==========================================================================
+      RESET E FUNDO BOTÂNICO (Detalhes de folha, erva-mate e chá)
+      ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--branco-creme);
+    background-image:
+        radial-gradient(circle at 12% 18%, rgba(116, 198, 157, 0.12) 0%, transparent 28%),
+        radial-gradient(circle at 88% 45%, rgba(233, 196, 106, 0.14) 0%, transparent 32%),
+        url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%232d6a4f' stroke-opacity='0.06' stroke-width='1.5'%3E%3Cpath d='M25 60 C25 35, 55 25, 65 25 C65 35, 55 65, 25 60 Z'/%3E%3Cpath d='M25 60 L60 28'/%3E%3Cpath d='M85 95 C95 75, 110 75, 115 80 C110 90, 95 100, 85 95 Z'/%3E%3Ccircle cx='35' cy='95' r='2' fill='%23e9c46a' fill-opacity='0.15' stroke='none'/%3E%3Ccircle cx='90' cy='25' r='2.5' fill='%2340916c' fill-opacity='0.15' stroke='none'/%3E%3C/g%3E%3C/svg%3E");
+    color: var(--texto-escuro);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+      HEADER E NAVEGAÇÃO (Botão de Login no Topo Direito)
+      ========================================================================== */
+header {
+    background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-mate) 100%);
+    color: var(--branco-puro);
+    padding: 0 5%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(27, 67, 50, 0.2);
+    border-bottom: 4px solid var(--amarelo-ouro);
+}
+
+header hr {
+    display: none;
+}
+
+header nav {
+    max-width: 1280px;
+    margin: 0 auto;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 12px 0;
+}
+
+header h1 a {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    color: var(--branco-puro);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.5px;
+}
+
+header h1 a::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='%23ffd166' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8Z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+header nav ul li a {
+    color: var(--branco-creme);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 8px 14px;
+    border-radius: 999px;
+    transition: all 0.25s ease;
+}
+
+header nav ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+    color: var(--amarelo-destaque);
+}
+
+header nav ul li a[href="carrinho.php"] {
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(233, 196, 106, 0.45);
+    color: var(--amarelo-destaque);
+    font-weight: 600;
+}
+
+header nav ul li a[href="carrinho.php"]:hover {
+    background-color: var(--amarelo-destaque);
+    color: var(--verde-escuro);
+}
+
+.btn-login-topo {
+    background: linear-gradient(135deg, var(--amarelo-destaque) 0%, var(--amarelo-ouro) 100%);
+    color: var(--verde-escuro) !important;
+    font-weight: 700 !important;
+    padding: 10px 22px !important;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(233, 196, 106, 0.35);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.btn-login-topo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(233, 196, 106, 0.5);
+    background: var(--branco-puro) !important;
+}
+
+/* ==========================================================================
+      CONTAINER PRINCIPAL E TIPOGRAFIA
+      ========================================================================== */
+main {
+    max-width: 1240px;
+    width: 92%;
+    margin: 36px auto 60px;
+    flex: 1;
+}
+
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1rem;
+    color: var(--verde-escuro);
+    margin-bottom: 18px;
+    position: relative;
+    display: inline-block;
+}
+
+h2::after {
+    content: "";
+    display: block;
+    width: 65%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--verde-folha), var(--amarelo-ouro));
+    border-radius: 2px;
+    margin-top: 6px;
+}
+
+h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--verde-mate);
+    font-size: 1.35rem;
+    margin-bottom: 10px;
+}
+
+/* ==========================================================================
+      LINHA COM TOPO DE XÍCARAS COLORIDAS E SABORES EMBAIXO
+      ========================================================================== */
+.linha-xicaras-sabores {
+    background: var(--branco-puro);
+    border: 1px solid var(--borda-sutil);
+    border-radius: var(--radius-padrao);
+    padding: 28px 20px 22px;
+    margin: 24px 0 38px;
+    box-shadow: var(--sombra-card);
+    position: relative;
+    overflow: hidden;
+}
+
+.linha-xicaras-sabores::before {
+    content: "✦ Infusões & Sabores Artesanais ✦";
+    display: block;
+    text-align: center;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--verde-folha);
+    font-weight: 700;
+    margin-bottom: 22px;
+}
+
+.xicaras-lista {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 24px;
+    position: relative;
+}
+
+.xicaras-lista::before {
+    content: "";
+    position: absolute;
+    top: 34px;
+    left: 6%;
+    right: 6%;
+    height: 2px;
+    background: repeating-linear-gradient(90deg,
+            var(--amarelo-ouro),
+            var(--amarelo-ouro) 8px,
+            transparent 8px,
+            transparent 16px);
+    z-index: 0;
+}
+
+.xicara-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 135px;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.xicara-item:hover {
+    transform: translateY(-6px);
+}
+
+.xicara-topo {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: var(--branco-puro);
+    border: 5px solid var(--cor-borda, var(--verde-mate));
+    box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.12),
+        inset 0 4px 10px rgba(0, 0, 0, 0.22);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.xicara-topo::after {
+    content: "";
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 18px;
+    border: 4px solid var(--cor-borda, var(--verde-mate));
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+}
+
+.xicara-topo::before {
+    content: "";
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--cor-cha, #386641);
+    box-shadow: inset 0 -3px 6px rgba(255, 255, 255, 0.35);
+}
+
+.xicara-mate-verde {
+    --cor-borda: #1b4332;
+    --cor-cha: radial-gradient(circle at 35% 35%, #74c69d, #2d6a4f);
+}
+
+.xicara-limao-mel {
+    --cor-borda: #e9c46a;
+    --cor-cha: radial-gradient(circle at 35% 35%, #ffe699, #d4a373);
+}
+
+.xicara-hortela {
+    --cor-borda: #40916c;
+    --cor-cha: radial-gradient(circle at 35% 35%, #95d5b2, #40916c);
+}
+
+.xicara-camomila {
+    --cor-borda: #f4a261;
+    --cor-cha: radial-gradient(circle at 35% 35%, #fff3b0, #e09f3e);
+}
+
+.xicara-mate-tostado {
+    --cor-borda: #583101;
+    --cor-cha: radial-gradient(circle at 35% 35%, #a47148, #582f0e);
+}
+
+.xicara-nome-sabor {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--verde-escuro);
+    background: var(--branco-gelo);
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--borda-sutil);
+}
+
+/* ==========================================================================
+      CATÁLOGO DE PRODUTOS E PREÇOS COM LINHAS
+      ========================================================================== */
+.catalogo-produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 26px;
+    margin-top: 20px;
+}
+
+.card-produto {
+    background: var(--branco-puro);
+    border: 1px solid var(--borda-sutil) !important;
+    border-top: 5px solid var(--verde-mate) !important;
+    border-radius: var(--radius-padrao);
+    padding: 24px !important;
+    margin-bottom: 0 !important;
+    box-shadow: var(--sombra-card);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    overflow: hidden;
+}
+
+.card-produto::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 75px;
+    height: 75px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' fill='%2374c69d' fill-opacity='0.18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M52 12C30 14 16 28 12 52c24-4 38-18 40-40z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+.card-produto:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-hover);
+    border-top-color: var(--amarelo-ouro) !important;
+}
+
+.card-produto h3 {
+    font-size: 1.25rem;
+    color: var(--verde-escuro);
+    margin-bottom: 8px;
+}
+
+.card-produto>p:first-of-type {
+    color: var(--texto-suave);
+    font-size: 0.94rem;
+    margin-bottom: 14px;
+}
+
+.card-produto>p:nth-of-type(2) {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--verde-escuro);
+    background: linear-gradient(90deg, var(--verde-menta-bg), var(--amarelo-suave));
+    padding: 10px 14px;
+    margin: 12px 0;
+    border-top: 2px solid var(--verde-folha);
+    border-bottom: 2px solid var(--amarelo-ouro);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-produto>p:nth-of-type(2) strong {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--verde-mate);
+}
+
+.card-produto small {
+    display: block;
+    background: var(--branco-gelo);
+    border-left: 3px solid var(--verde-folha);
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: var(--texto-suave);
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+.card-produto form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--borda-sutil);
+}
+
+.card-produto input[type="number"] {
+    width: 68px;
+    padding: 9px 10px;
+    border: 1.5px solid var(--borda-sutil);
+    border-radius: 8px;
+    font-weight: 600;
+    color: var(--verde-escuro);
+    background: var(--branco-creme);
+}
+
+/* ==========================================================================
+      BOTÕES GERAIS
+      ========================================================================== */
+button,
+input[type="submit"] {
+    background: linear-gradient(135deg, var(--verde-mate) 0%, var(--verde-escuro) 100%);
+    color: var(--branco-puro);
+    border: none;
+    padding: 11px 20px;
+    border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(45, 106, 79, 0.22);
+}
+
+button:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--verde-folha) 0%, var(--verde-mate) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(45, 106, 79, 0.32);
+}
+
+form[action="checkout.php"] button[type="submit"] {
+    width: 100%;
+    margin-top: 16px;
+    padding: 15px 24px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--amarelo-destaque) 0%, var(--amarelo-ouro) 100%);
+    color: var(--verde-escuro);
+    box-shadow: 0 6px 18px rgba(233, 196, 106, 0.4);
+}
+
+form[action="checkout.php"] button[type="submit"]:hover {
+    background: linear-gradient(135deg, var(--amarelo-ouro) 0%, var(--amarelo-infusao) 100%);
+    color: var(--branco-puro);
+}
+
+button:disabled {
+    background: #cbd5ce;
+    color: #6c7a71;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ==========================================================================
+      CARRINHO DE COMPRAS (TABELA E RESUMO FINANCEIRO)
+      ========================================================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--branco-puro);
+    border-radius: var(--radius-padrao);
+    overflow: hidden;
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--borda-sutil) !important;
+    margin-bottom: 24px;
+}
+
+table thead {
+    background: var(--verde-escuro);
+    color: var(--branco-puro);
+}
+
+table th,
+table td {
+    padding: 14px 16px;
+    text-align: left;
+    border: none !important;
+    border-bottom: 1px solid var(--borda-sutil) !important;
+}
+
+table tbody tr:hover {
+    background-color: var(--verde-menta-bg);
+}
+
+table td a {
+    color: var(--erro-vermelho);
+    font-weight: 600;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: #fff0f0;
+}
+
+table td a:hover {
+    background: var(--erro-vermelho);
+    color: var(--branco-puro);
+}
+
+main>div[style*="border: 1px solid #000"] {
+    background: var(--branco-puro);
+    border: 2px solid var(--verde-mate) !important;
+    border-radius: var(--radius-padrao);
+    padding: 26px !important;
+    box-shadow: var(--sombra-card);
+    margin-top: 20px;
+}
+
+main>div[style*="border: 1px solid #000"] h2 {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 2px dashed var(--amarelo-ouro);
+    color: var(--verde-escuro);
+}
+
+/* ==========================================================================
+      TELA DE LOGIN E CADASTRO (auth.php)
+      ========================================================================== */
+main>div[style*="display: flex"] {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 28px !important;
+    margin-top: 24px;
+}
+
+main>div[style*="display: flex"]>section {
+    width: 100% !important;
+    background: var(--branco-puro);
+    border: 1px solid var(--borda-sutil) !important;
+    border-top: 5px solid var(--verde-folha) !important;
+    border-radius: var(--radius-padrao);
+    padding: 28px !important;
+    box-shadow: var(--sombra-card);
+}
+
+main>div[style*="display: flex"]>section:nth-child(2) {
+    border-top-color: var(--amarelo-ouro) !important;
+    background: linear-gradient(180deg, var(--amarelo-suave) 0%, var(--branco-puro) 25%);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 11px 14px;
+    margin-top: 6px;
+    border: 1.5px solid var(--borda-sutil);
+    border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.95rem;
+    background: var(--branco-creme);
+    color: var(--texto-escuro);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--verde-folha);
+    box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.18);
+    background: var(--branco-puro);
+}
+
+/* ==========================================================================
+      ALERTAS E MENSAGENS
+      ========================================================================== */
+p[style*="color: green"],
+main>p:has(strong) {
+    background: var(--verde-suave);
+    color: var(--verde-escuro) !important;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border-left: 5px solid var(--verde-mate);
+    margin-bottom: 18px;
+}
+
+p[style*="color: red"] {
+    background: #ffe5e8;
+    color: var(--erro-vermelho) !important;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border-left: 5px solid var(--erro-vermelho);
+    margin-bottom: 18px;
+}
+
+/* ==========================================================================
+      FOOTER (RODAPÉ COM DETALHES EM VERDE E AMARELO)
+      ========================================================================== */
+footer {
+    background: var(--verde-escuro);
+    color: var(--branco-creme);
+    padding: 40px 5% 28px;
+    border-top: 5px solid var(--amarelo-ouro);
+    margin-top: auto;
+}
+
+footer>section {
+    max-width: 1240px;
+    margin: 0 auto 24px;
+}
+
+footer h4 {
+    font-family: 'Playfair Display', serif;
+    color: var(--amarelo-destaque);
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+}
+
+footer ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+footer ul li {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 12px 16px;
+    border-radius: 10px;
+    border-left: 3px solid var(--verde-claro);
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: var(--amarelo-destaque);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    header nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .xicaras-lista::before {
+        display: none;
+    }
+}
