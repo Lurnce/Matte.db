@@ -1,13 +1,35 @@
 <?php
 require_once 'config.php';
 
-// Remover item ou limpar carrinho
+// Remover item do carrinho
 if (isset($_GET['remover'])) {
     $idRem = (int)$_GET['remover'];
     unset($_SESSION['carrinho'][$idRem]);
     header("Location: carrinho.php");
     exit;
 }
+
+// Salva preferências do carrinho na sessão para não perder ao recarregar
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION['opcoes_carrinho'] = [
+        'distancia_km'    => isset($_POST['distancia_km']) ? max(1, (float)$_POST['distancia_km']) : 5.0,
+        'forma_retirada'  => $_POST['forma_retirada'] ?? 'Delivery',
+        'forma_pagamento' => $_POST['forma_pagamento'] ?? 'Pix',
+        'usar_pontos'     => isset($_POST['usar_pontos'])
+    ];
+}
+
+$opcoes = $_SESSION['opcoes_carrinho'] ?? [
+    'distancia_km'    => 5.0,
+    'forma_retirada'  => 'Delivery',
+    'forma_pagamento' => 'Pix',
+    'usar_pontos'     => false
+];
+
+$distanciaKm    = $opcoes['distancia_km'];
+$formaRetirada  = $opcoes['forma_retirada'];
+$formaPagamento = $opcoes['forma_pagamento'];
+$usarPontos     = $opcoes['usar_pontos'];
 
 $itensCarrinho = [];
 $subtotal = 0.00;
@@ -33,11 +55,6 @@ if (!empty($_SESSION['carrinho'])) {
 }
 
 // Simulação de cálculo de frete (RF-010: Quantidade + Distância)
-$distanciaKm = isset($_POST['distancia_km']) ? max(1, (float)$_POST['distancia_km']) : 5.0;
-$formaRetirada = $_POST['forma_retirada'] ?? 'Delivery';
-$formaPagamento = $_POST['forma_pagamento'] ?? 'Pix';
-$usarPontos = isset($_POST['usar_pontos']);
-
 $valorFrete = ($formaRetirada === 'Retirada') ? 0.00 : round(($qtdTotalProdutos * 1.50) + ($distanciaKm * 0.80), 2);
 
 // Verifica regras de negócio caso o cliente já esteja logado
@@ -123,6 +140,8 @@ require_once 'header.php';
                 <input type="number" step="0.5" min="1" name="distancia_km" value="<?= $distanciaKm ?>">
             </label>
             <button type="submit">Recalcular Frete</button><br><br>
+        <?php else: ?>
+            <input type="hidden" name="distancia_km" value="<?= $distanciaKm ?>">
         <?php endif; ?>
 
         <label>Forma de Pagamento (RF-002):

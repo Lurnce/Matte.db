@@ -1,8 +1,9 @@
 <?php
 require_once 'config.php';
 
-// Logout
+// Logout seguro
 if (isset($_GET['acao']) && $_GET['acao'] === 'sair') {
+    $_SESSION = [];
     session_destroy();
     header("Location: index.php");
     exit;
@@ -24,10 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
 
         // RNF-001: Verificação de senha criptografada
         if ($cliente && password_verify($senha, $cliente['senha'])) {
+            session_regenerate_id(true); // Previne Session Fixation
             $_SESSION['cliente_id'] = $cliente['idclientes'];
             $_SESSION['cliente_nome'] = $cliente['nome'];
 
-            // Retorna automaticamente para o checkout pendente ou carrinho
             $destino = isset($_SESSION['checkout_pendente']) ? 'checkout.php' : 'carrinho.php';
             header("Location: $destino");
             exit;
@@ -45,9 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
     $endereco = trim($_POST['endereco'] ?? '');
     $senha    = $_POST['senha'] ?? '';
 
-    // RNF-004: Não permitir valores nulos/vazios
+    // RNF-004: Não permitir valores nulos/vazios e validar e-mail
     if (empty($nome) || empty($telefone) || empty($email) || empty($endereco) || empty($senha)) {
         $erro = "Todos os campos (Nome, Telefone, E-mail, Endereço e Senha) são obrigatórios.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $erro = "Informe um endereço de e-mail válido.";
     } else {
         // RNF-003: Verificar cadastro repetido
         $stmtCheck = $pdo->prepare("SELECT idclientes FROM clientes WHERE email = ?");
@@ -59,9 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
             // RNF-001: Criptografar informações pessoais (senha)
             $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-            $stmtInsert = $pdo->prepare("INSERT INTO clientes (nome, telefone, email, senha, endereco) VALUES (?, ?, ?, ?, ?)");
+            $stmtInsert = $pdo->prepare("INSERT INTO clientes (nome, telefone, email, senha, endereco, ponto_fide, primeiro_pedido) VALUES (?, ?, ?, ?, ?, 0, 1)");
             $stmtInsert->execute([$nome, $telefone, $email, $senhaHash, $endereco]);
 
+            session_regenerate_id(true);
             $_SESSION['cliente_id'] = $pdo->lastInsertId();
             $_SESSION['cliente_nome'] = $nome;
 

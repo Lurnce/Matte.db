@@ -1,16 +1,24 @@
 <?php
 require_once 'config.php';
 
-// Adicionar produto ao carrinho
+// Adicionar produto ao carrinho com validação de estoque
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['adicionar_id'])) {
     $idProd = (int)$_POST['adicionar_id'];
-    $qtd = max(1, (int)$_POST['quantidade']);
+    $qtdSolicitada = max(1, (int)$_POST['quantidade']);
 
-    if (isset($_SESSION['carrinho'][$idProd])) {
-        $_SESSION['carrinho'][$idProd] += $qtd;
-    } else {
-        $_SESSION['carrinho'][$idProd] = $qtd;
+    // Consulta estoque atual
+    $stmtEst = $pdo->prepare("SELECT quantidade_atual FROM estoque WHERE idprodutos = ? AND verificacao_sanitaria = 1");
+    $stmtEst->execute([$idProd]);
+    $estoqueDisponivel = (int)$stmtEst->fetchColumn();
+
+    $qtdNoCarrinho = $_SESSION['carrinho'][$idProd] ?? 0;
+
+    if (($qtdNoCarrinho + $qtdSolicitada) > $estoqueDisponivel) {
+        header("Location: index.php?msg=sem_estoque");
+        exit;
     }
+
+    $_SESSION['carrinho'][$idProd] = $qtdNoCarrinho + $qtdSolicitada;
     header("Location: index.php?msg=adicionado");
     exit;
 }
@@ -28,7 +36,9 @@ require_once 'header.php';
 <h2>Nossos Chás e Mattes Artesanais</h2>
 
 <?php if (isset($_GET['msg']) && $_GET['msg'] === 'adicionado'): ?>
-    <p><strong>Produto adicionado ao carrinho!</strong> <a href="carrinho.php">Ir para o carrinho</a></p>
+    <p style="color: green;"><strong>Produto adicionado ao carrinho!</strong> <a href="carrinho.php">Ir para o carrinho</a></p>
+<?php elseif (isset($_GET['msg']) && $_GET['msg'] === 'sem_estoque'): ?>
+    <p style="color: red;"><strong>Aviso:</strong> A quantidade solicitada ultrapassa o estoque disponível deste lote.</p>
 <?php endif; ?>
 
 <section class="catalogo-produtos">

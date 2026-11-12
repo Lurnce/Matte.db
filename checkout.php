@@ -10,7 +10,7 @@ if (empty($_SESSION['carrinho'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['checkout_pendente'] = [
         'forma_retirada'  => $_POST['forma_retirada'] ?? 'Delivery',
-        'distancia_km'    => (float)($_POST['distancia_km'] ?? 5.0),
+        'distancia_km'    => max(1, (float)($_POST['distancia_km'] ?? 5.0)),
         'forma_pagamento' => $_POST['forma_pagamento'] ?? 'Pix',
         'usar_pontos'     => ($_POST['usar_pontos'] ?? '0') === '1'
     ];
@@ -34,10 +34,14 @@ $clienteId = $_SESSION['cliente_id'];
 try {
     $pdo->beginTransaction();
 
-    // 1. Busca dados do cliente
+    // 1. Busca dados do cliente com bloqueio de linha
     $stmtCli = $pdo->prepare("SELECT * FROM clientes WHERE idclientes = ? FOR UPDATE");
     $stmtCli->execute([$clienteId]);
     $cliente = $stmtCli->fetch();
+
+    if (!$cliente) {
+        throw new Exception("Cliente não encontrado.");
+    }
 
     // 2. Recalcula itens e valida estoque
     $ids = implode(',', array_map('intval', array_keys($_SESSION['carrinho'])));
@@ -91,19 +95,20 @@ try {
 
     // 7. Gera registro de Delivery em tempo real (RF-012)
     if ($dadosCheckout['forma_retirada'] === 'Delivery') {
-        $stmtDel = $pdo->prepare("INSERT INTO delivery (idpedidos, endereco_pedido, local_entregador, status_entrega) VALUES (?, ?, ?, ?)");
-        $stmtDel->execute([$idPedido, $cliente['endereco'], 'Loja Central - Preparando despacho', 'Saiu para entrega']);
+        $stmtDel = $pdo->prepare("INSERT INTO delivery (idpedidos, nome_entregador, endereco_pedido, local_entregador, status_entrega) VALUES (?, ?, ?, ?, ?)");
+        $stmtDel->execute([$idPedido, 'Aguardando atribuição', $cliente['endereco'], 'Loja Central - Preparando despacho', 'Em preparação']);
     }
 
     $pdo->commit();
 
-    // Limpa carrinho e sessão pendente
-    unset($_SESSION['carrinho']);
-    unset($_SESSION['checkout_pendente']);
+    // Limpa carrinho e sessões temporárias
+    unset($_SESSION['carrinho'], $_SESSION['checkout_pendente'], $_SESSION['opcoes_carrinho']);
 
     header("Location: meus_pedidos.php?sucesso=$idPedido");
     exit;
 } catch (Exception $e) {
-    $pdo->rollBack();
-    die("Erro ao processar pagamento: " . $e->getMessage());
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    die("Erro ao processar pagamento: " . htmlspecialchars($e->getMessage()));
 }

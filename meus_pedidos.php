@@ -8,6 +8,7 @@ if (!isset($_SESSION['cliente_id'])) {
 
 $clienteId = $_SESSION['cliente_id'];
 $msgSuporte = '';
+$erroSuporte = '';
 
 // Processar chamado de suporte ou pedido de reembolso (RF-011 e RN-004)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['abrir_suporte'])) {
@@ -16,9 +17,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['abrir_suporte'])) {
     $mensagem    = trim($_POST['registro_sup'] ?? '');
 
     if (!empty($mensagem)) {
-        $stmtSup = $pdo->prepare("INSERT INTO suporte (idclientes, idpedidos, tipo_chamado, registro_sup) VALUES (?, ?, ?, ?)");
-        $stmtSup->execute([$clienteId, $idPedidoRef, $tipoChamado, $mensagem]);
-        $msgSuporte = "Solicitação registrada com sucesso! Nossa equipe analisará seu chamado.";
+        // Valida se o pedido informado realmente pertence ao cliente logado
+        if ($idPedidoRef !== null) {
+            $stmtCheckPed = $pdo->prepare("SELECT idpedidos FROM pedidos WHERE idpedidos = ? AND idclientes = ?");
+            $stmtCheckPed->execute([$idPedidoRef, $clienteId]);
+            if (!$stmtCheckPed->fetch()) {
+                $erroSuporte = "O número de pedido informado não foi encontrado na sua conta.";
+            }
+        }
+
+        if (empty($erroSuporte)) {
+            $stmtSup = $pdo->prepare("INSERT INTO suporte (idclientes, idpedidos, tipo_chamado, registro_sup) VALUES (?, ?, ?, ?)");
+            $stmtSup->execute([$clienteId, $idPedidoRef, $tipoChamado, $mensagem]);
+            $msgSuporte = "Solicitação registrada com sucesso! Nossa equipe analisará seu chamado.";
+        }
     }
 }
 
@@ -49,6 +61,10 @@ require_once 'header.php';
     <p style="color: blue;"><strong>Suporte:</strong> <?= htmlspecialchars($msgSuporte) ?></p>
 <?php endif; ?>
 
+<?php if ($erroSuporte): ?>
+    <p style="color: red;"><strong>Erro no Suporte:</strong> <?= htmlspecialchars($erroSuporte) ?></p>
+<?php endif; ?>
+
 <p>Seu Saldo de Pontos Fidelidade (RF-013): <strong><?= (int)$pontosAtuais ?> pontos</strong> <em>(A cada 100 pontos você ganha 10% de desconto na próxima compra)</em>.</p>
 
 <h3>Histórico e Monitoramento de Entrega (RF-012)</h3>
@@ -65,9 +81,9 @@ require_once 'header.php';
             <?php if ($ped['forma_retirada'] === 'Delivery'): ?>
                 <div style="background: #f4f4f4; padding: 10px; margin-top: 10px;">
                     <strong>Rastreamento em Tempo Real (RF-012):</strong><br>
-                    Entregador: <?= htmlspecialchars($ped['nome_entregador']) ?><br>
-                    Status: <?= htmlspecialchars($ped['status_entrega']) ?><br>
-                    Localização Atual: <em><?= htmlspecialchars($ped['local_entregador']) ?></em>
+                    Entregador: <?= htmlspecialchars($ped['nome_entregador'] ?? 'Aguardando atribuição') ?><br>
+                    Status: <?= htmlspecialchars($ped['status_entrega'] ?? 'Em processamento') ?><br>
+                    Localização Atual: <em><?= htmlspecialchars($ped['local_entregador'] ?? 'Loja Central') ?></em>
                 </div>
             <?php endif; ?>
         </div>
@@ -89,7 +105,12 @@ require_once 'header.php';
     </label><br><br>
 
     <label>Número do Pedido (opcional):
-        <input type="number" name="idpedidos" placeholder="Ex: 1">
+        <select name="idpedidos">
+            <option value="">-- Nenhum pedido específico --</option>
+            <?php foreach ($pedidos as $ped): ?>
+                <option value="<?= $ped['idpedidos'] ?>">Pedido #<?= $ped['idpedidos'] ?> (<?= date('d/m/Y', strtotime($ped['datahora_pedido'])) ?>)</option>
+            <?php endforeach; ?>
+        </select>
     </label><br><br>
 
     <label>Descreva o ocorrido:<br>
